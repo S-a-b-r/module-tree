@@ -82,3 +82,32 @@ func (m *Module) GetWithDepth(depth int) *Module {
 	}
 	return &newM
 }
+
+func (m *Module) DrawIONode(sb *strings.Builder, parentId int, nextId *int, x, y int) {
+	currentId := *nextId
+	*nextId++
+
+	// Добавляем узел модуля
+	sb.WriteString(fmt.Sprintf(`
+		<mxCell id="%d" value="%s@%s" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+			<mxGeometry x="%d" y="%d" width="120" height="60" as="geometry" />
+		</mxCell>`,
+		currentId, m.Name, m.Version, x, y))
+
+	// Добавляем связь с родителем
+	if parentId != 1 {
+		sb.WriteString(fmt.Sprintf(`
+		<mxCell id="%d" source="%d" target="%d" parent="1" edge="1">
+			<mxGeometry relative="1" as="geometry" />
+		</mxCell>`,
+			*nextId, parentId, currentId))
+		*nextId++
+	}
+
+	// Отрисовываем дочерние элементы
+	childX := x - 200 + len(m.ChildModules)*20
+	childY := y + 100
+	for i, dep := range m.ChildModules {
+		dep.DrawIONode(sb, currentId, nextId, childX+i*150, childY)
+	}
+}

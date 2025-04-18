@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"strings"
 )
 
 type Graph struct {
@@ -55,4 +56,31 @@ func (g *Graph) GetWithDepth(depth int) *Graph {
 		newG.ChildModules = append(newG.ChildModules, m.GetWithDepth(depth-1))
 	}
 	return &newG
+}
+
+// ToDrawIO генерирует XML для импорта в draw.io
+func (g *Graph) ToDrawIO() string {
+	if g.Module == nil {
+		return ""
+	}
+
+	var sb strings.Builder
+	sb.WriteString(`<mxfile>
+	<diagram name="Page-1">
+		<mxGraphModel>
+			<root>
+				<mxCell id="0" />
+				<mxCell id="1" parent="0" />`)
+
+	// Рекурсивное построение элементов
+	nextId := 2
+	g.Module.DrawIONode(&sb, 1, &nextId, 0, 0)
+
+	sb.WriteString(`
+			</root>
+		</mxGraphModel>
+	</diagram>
+</mxfile>`)
+
+	return sb.String()
 }

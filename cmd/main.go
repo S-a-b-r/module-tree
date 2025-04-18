@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -27,7 +28,18 @@ func main() {
 		ss := strings.Split(s, " ")
 		strs = append(strs, ss...)
 	}
-	g := models.NewGraph(strs)
+	g := models.NewGraph(strs).GetWithDepth(depth)
 
-	fmt.Println(g.GetWithDepth(depth))
+	fmt.Println("success get tree")
+	fmt.Println(g)
+
+	xml := g.ToDrawIO()
+
+	// Сохраняем в файл
+	if err = os.WriteFile("dependencies.drawio", []byte(xml), 0644); err != nil {
+		fmt.Println("Error saving file:", err)
+		return
+	}
+
+	fmt.Println("DrawIO file saved successfully")
 }
