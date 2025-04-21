@@ -13,7 +13,9 @@ import (
 
 func main() {
 	var depth int
+	var substring string
 	flag.IntVar(&depth, "depth", 5, "Глубина вложенных зависимостей")
+	flag.StringVar(&substring, "substring", "", "Подстрока для поиска")
 	flag.Parse()
 
 	cmd := exec.Command("go", "mod", "graph")
@@ -29,6 +31,10 @@ func main() {
 		strs = append(strs, ss...)
 	}
 	g := models.NewGraph(strs).GetWithDepth(depth)
+
+	if substring != "" {
+		g = g.GetWithSubstr(substring)
+	}
 
 	fmt.Println("success get tree")
 	fmt.Println(g)

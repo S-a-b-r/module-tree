@@ -53,8 +53,35 @@ func (g *Graph) GetWithDepth(depth int) *Graph {
 	}
 
 	for _, m := range g.ChildModules {
-		newG.ChildModules = append(newG.ChildModules, m.GetWithDepth(depth-1))
+		cm := m.GetWithDepth(depth - 1)
+		if cm != nil {
+			newG.ChildModules = append(newG.ChildModules, cm)
+		}
 	}
+	return &newG
+}
+
+func (g *Graph) GetWithSubstr(substr string) *Graph {
+	if substr == "" {
+		fmt.Println("Empty substr")
+		return nil
+	}
+
+	newG := Graph{
+		&Module{
+			Name:         g.Name,
+			Version:      g.Version,
+			ChildModules: make([]*Module, 0),
+		},
+	}
+
+	for _, m := range g.ChildModules {
+		cm := m.GetWithSubstr(substr)
+		if cm != nil {
+			newG.ChildModules = append(newG.ChildModules, cm)
+		}
+	}
+
 	return &newG
 }
 

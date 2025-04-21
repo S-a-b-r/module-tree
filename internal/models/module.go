@@ -55,14 +55,6 @@ func (m *Module) String(depth int, prefix string) string {
 	return sb.String()
 }
 
-func parseModuleInfo(s string) (name, version string) {
-	if strings.Contains(s, "@") {
-		parts := strings.Split(s, "@")
-		return parts[0], parts[1]
-	}
-	return s, "1.0.0" // default version
-}
-
 func (m *Module) GetWithDepth(depth int) *Module {
 	if depth == 0 {
 		return nil
@@ -80,6 +72,27 @@ func (m *Module) GetWithDepth(depth int) *Module {
 			newM.ChildModules = append(newM.ChildModules, module)
 		}
 	}
+	return &newM
+}
+
+func (m *Module) GetWithSubstr(substr string) *Module {
+	if !strings.Contains(m.Name, substr) {
+		return nil
+	}
+
+	newM := Module{
+		Name:         m.Name,
+		Version:      m.Version,
+		ChildModules: make([]*Module, 0),
+	}
+
+	for _, cm := range m.ChildModules {
+		module := cm.GetWithSubstr(substr)
+		if module != nil {
+			newM.ChildModules = append(newM.ChildModules, module)
+		}
+	}
+
 	return &newM
 }
 
@@ -110,4 +123,12 @@ func (m *Module) DrawIONode(sb *strings.Builder, parentId int, nextId *int, x, y
 	for i, dep := range m.ChildModules {
 		dep.DrawIONode(sb, currentId, nextId, childX+i*150, childY)
 	}
+}
+
+func parseModuleInfo(s string) (name, version string) {
+	if strings.Contains(s, "@") {
+		parts := strings.Split(s, "@")
+		return parts[0], parts[1]
+	}
+	return s, "1.0.0" // default version
 }
