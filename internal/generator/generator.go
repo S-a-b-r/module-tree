@@ -1,9 +1,7 @@
-package main
+package generator
 
 import (
-	"flag"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -11,17 +9,13 @@ import (
 	"graph-generator/internal/models"
 )
 
-func main() {
-	var depth int
-	var substring string
-	flag.IntVar(&depth, "depth", 5, "Глубина вложенных зависимостей")
-	flag.StringVar(&substring, "substring", "", "Подстрока для поиска")
-	flag.Parse()
-
+func GenerateTree(dir string, substring string, depth int) {
 	cmd := exec.Command("go", "mod", "graph")
+	cmd.Dir = dir
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Fatalf("Ошибка выполнения команды: %v\nВывод: %s", err, output)
+		fmt.Printf("Ошибка выполнения команды: %v\nВывод: %s, папка: %s", err, output, dir)
+		return
 	}
 
 	strsModules := strings.Split(string(output), "\n")
