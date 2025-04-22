@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"os"
 
 	"graph-generator/internal/generator"
 )
@@ -13,5 +15,15 @@ func main() {
 	flag.StringVar(&substring, "substring", "", "Подстрока для поиска")
 	flag.Parse()
 
-	generator.GenerateTree("", substring, depth)
+	t := generator.GenerateTree("", substring, depth)
+
+	fmt.Println("success get tree")
+	fmt.Println(t)
+	
+	xml := t.ToDrawIO()
+
+	// Сохраняем в файл
+	if err := os.WriteFile("dependencies.drawio", []byte(xml), 0644); err != nil {
+		fmt.Println("Error saving file:", err)
+	}
 }
