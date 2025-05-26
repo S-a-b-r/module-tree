@@ -5,16 +5,16 @@ import (
 	"strings"
 )
 
-type Graph struct {
+type Tree struct {
 	*Module
 }
 
-func NewGraph(graphStrs []string) *Graph {
-	nameGraph := graphStrs[0]
+func NewTree(graphStrs []string) *Tree {
+	nameTree := graphStrs[0]
 
-	g := Graph{
+	g := Tree{
 		&Module{
-			Name:    nameGraph,
+			Name:    nameTree,
 			Version: "1.0.0",
 		},
 	}
@@ -31,20 +31,20 @@ func NewGraph(graphStrs []string) *Graph {
 	return &g
 }
 
-func (g *Graph) String() string {
+func (g *Tree) String() string {
 	if g.Module == nil {
 		return "<empty graph>"
 	}
 	return g.Module.String(0, "")
 }
 
-func (g *Graph) GetWithDepth(depth int) *Graph {
+func (g *Tree) GetWithDepth(depth int) *Tree {
 	if depth < 2 {
 		fmt.Println("Min depth is 2")
 		return nil
 	}
 
-	newG := Graph{
+	newG := Tree{
 		&Module{
 			Name:         g.Name,
 			Version:      g.Version,
@@ -61,13 +61,13 @@ func (g *Graph) GetWithDepth(depth int) *Graph {
 	return &newG
 }
 
-func (g *Graph) GetWithSubstr(substr string) *Graph {
+func (g *Tree) GetWithSubstr(substr string) *Tree {
 	if substr == "" {
 		fmt.Println("Empty substr")
 		return nil
 	}
 
-	newG := Graph{
+	newG := Tree{
 		&Module{
 			Name:         g.Name,
 			Version:      g.Version,
@@ -86,7 +86,7 @@ func (g *Graph) GetWithSubstr(substr string) *Graph {
 }
 
 // ToDrawIO генерирует XML для импорта в draw.io
-func (g *Graph) ToDrawIO() string {
+func (g *Tree) ToDrawIO() string {
 	if g.Module == nil {
 		return ""
 	}
@@ -94,7 +94,7 @@ func (g *Graph) ToDrawIO() string {
 	var sb strings.Builder
 	sb.WriteString(`<mxfile>
 	<diagram name="Page-1">
-		<mxGraphModel>
+		<mxTreeModel>
 			<root>
 				<mxCell id="0" />
 				<mxCell id="1" parent="0" />`)
@@ -105,7 +105,7 @@ func (g *Graph) ToDrawIO() string {
 
 	sb.WriteString(`
 			</root>
-		</mxGraphModel>
+		</mxTreeModel>
 	</diagram>
 </mxfile>`)
 

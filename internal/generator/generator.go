@@ -8,7 +8,7 @@ import (
 	"graph-generator/internal/models"
 )
 
-func GenerateTree(dir string, substring string, depth int) *models.Graph {
+func GenerateTree(dir string, substring string, depth int) *models.Tree {
 	cmd := exec.Command("go", "mod", "graph")
 	cmd.Dir = dir
 	output, err := cmd.CombinedOutput()
@@ -23,8 +23,8 @@ func GenerateTree(dir string, substring string, depth int) *models.Graph {
 		ss := strings.Split(s, " ")
 		strs = append(strs, ss...)
 	}
-	
-	g := models.NewGraph(strs).GetWithDepth(depth)
+
+	g := models.NewTree(strs).GetWithDepth(depth)
 
 	if substring != "" {
 		g = g.GetWithSubstr(substring)

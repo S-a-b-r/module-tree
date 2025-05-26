@@ -102,18 +102,18 @@ func (m *Module) DrawIONode(sb *strings.Builder, parentId int, nextId *int, x, y
 
 	// Добавляем узел модуля
 	sb.WriteString(fmt.Sprintf(`
-		<mxCell id="%d" value="%s@%s" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+		<mxCell id="%d" value="%s" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
 			<mxGeometry x="%d" y="%d" width="120" height="60" as="geometry" />
 		</mxCell>`,
-		currentId, m.Name, m.Version, x, y))
+		currentId, m.Name, x, y))
 
 	// Добавляем связь с родителем
 	if parentId != 1 {
 		sb.WriteString(fmt.Sprintf(`
-		<mxCell id="%d" source="%d" target="%d" parent="1" edge="1">
+		<mxCell id="%d" value="%s" source="%d" target="%d" parent="1" edge="1">
 			<mxGeometry relative="1" as="geometry" />
 		</mxCell>`,
-			*nextId, parentId, currentId))
+			*nextId, m.Version, parentId, currentId))
 		*nextId++
 	}
 
